@@ -10,4 +10,8 @@ socketio = SocketIO(app)
 
 @app.route("/")
 def index():
-    return render_template("index.html", message="hello there")
+    return render_template("index.html", message="Hey What's your name?")
+
+
+if __name__ == '__main__':
+    socketio.run(app)
