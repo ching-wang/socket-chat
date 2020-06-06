@@ -1,4 +1,4 @@
-# Project 2
+# Project 2 - Flack
 
 Web Programming with Python and JavaScript
 
