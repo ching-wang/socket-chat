@@ -10,6 +10,8 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 
+roomLists = {"ROOM_1": None}
+
 # Configure flask login
 # login = LoginManager(app)
 # login.init_app(app)
@@ -34,12 +36,34 @@ def join():
     # save display name in session
     session['display_name'] = request.form.get("display_name")
     # render a template showing list of chats and form to create new one
-    return redirect("/main")
+
+    # Flash message to show login in successfully
+    flash('login successfully. Please create a channel or join one to start t chart', 'success')
+    return redirect('/main')
 
 
 @app.route("/main", methods=["GET"])
 def main():
-    return render_template('main.html')
+    return render_template('main.html', rooms=roomLists)
+
+
+@app.route("/logout", methods=["GET"])
+def logout():
+    session.clear()
+    flash('You are successfully logged out. Please create a channel or join one to start t chart', 'success')
+    return render_template("index.html")
+
+
+@app.route("/room/<room_name>", methods=["GET"])
+def room(room_name: str):
+    return render_template("room.html", room_name=room_name, rooms=roomLists)
+
+# Create channel
+@socketio.on("create channel")
+def create_channel(channel_name):
+    selection = data["selection"]
+    channels[selection] += 1
+    emit("channel lists", channels, broadcast=True)
 
 # Receiving message
 @socketio.on('message')
