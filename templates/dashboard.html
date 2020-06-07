@@ -69,11 +69,11 @@
           </div>
         </div>
         <ul class="nav flex-column">
-          {% for name, c in rooms.items() %}
+          {% for name, c in channels.items() %}
           <li class="nav-item">
             <a
               class="nav-link active"
-              href="{{ url_for('room', room_name=name )}}"
+              href="{{ url_for('channels', channel_name=name )}}"
             >
               <span data-feather="home"></span>
               {{ name }} <span class="sr-only">(current)</span>

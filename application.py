@@ -10,7 +10,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 
-roomLists = {"ROOM_1": None}
+channelLists = {"CHANNEL_1": None}
 
 # Configure flask login
 # login = LoginManager(app)
@@ -44,7 +44,7 @@ def join():
 
 @app.route("/main", methods=["GET"])
 def main():
-    return render_template('main.html', rooms=roomLists)
+    return render_template('main.html', channels=channelLists)
 
 
 @app.route("/logout", methods=["GET"])
@@ -54,9 +54,9 @@ def logout():
     return render_template("index.html")
 
 
-@app.route("/room/<room_name>", methods=["GET"])
-def room(room_name: str):
-    return render_template("room.html", room_name=room_name, rooms=roomLists)
+@app.route("/channels/<channel_name>", methods=["GET", "POST"])
+def channels(channel_name: str):
+    return render_template("channels.html", channel_name=channel_name, channels=channelLists)
 
 # Create channel
 @socketio.on("create channel")
