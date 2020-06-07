@@ -1,18 +1,30 @@
 {% extends 'layout.html' %} {% block body %}
-<h1>Wecome! Login in and start to chat now</h1>
+<h1>Wecome to Socket Chat</h1>
 
-<ul id="messages"></ul>
-<form action=""><input id="m" autocomplete="off" /><button>Send</button></form>
-<!-- <form class="form-inline">
-  <div class="form-group mx-sm-3 mb-2">
-    <label for="inputUsername" class="sr-only">Username</label>
-    <input
-      type="username"
-      class="form-control"
-      id="inputUsername"
-      placeholder="Username"
-    />
+<div class="row marketing">
+  <div class="col-md-12">
+    <div class="panel panel-default panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">Join Chat</h3>
+      </div>
+      <form class="form" method="post" action="/join">
+        <div class="form-group">
+          <label for="display_name">
+            Display Name
+          </label>
+          <input
+            class="form-control"
+            maxlength="20"
+            name="display_name"
+            id="display_name"
+            type="text"
+            required
+          />
+        </div>
+        <br />
+        <button class="btn btn-block btn-primary" type="submit" />Join</button>
+      </form>
+    </div>
   </div>
-  <button type="submit" class="btn btn-primary mb-2">Login</button>
-</form> -->
+</div>
 {% endblock%}
