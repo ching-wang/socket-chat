@@ -28,7 +28,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">
-                  Create an new channel
+                  Create an channel
                 </h5>
                 <button
                   type="button"
@@ -40,7 +40,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form method="post" action="/">
+                <form method="post" action="/" id="channel_creation">
                   <div class="form-group">
                     <label for="recipient-name" class="col-form-label"
                       >Channel Name:</label
@@ -48,7 +48,9 @@
                     <input
                       type="text"
                       class="form-control"
-                      id="recipient-name"
+                      id="channel_name"
+                      placeholder="Channel Name"
+                      required
                     />
                   </div>
                   <div class="modal-footer">
@@ -59,7 +61,11 @@
                     >
                       Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button
+                      id="create_channel_button"
+                      type="submit"
+                      class="btn btn-primary"
+                    >
                       Create
                     </button>
                   </div>
