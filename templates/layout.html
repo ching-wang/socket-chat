@@ -19,9 +19,29 @@
       href="{{ url_for('static', filename='main.css') }}"
     />
     <script src="{{ url_for('static', filename='index.js') }}"></script>
-    <title>SOCKET CHAT</title>
+    <title>{% block title%}{% endblock%} - Socket-Chat</title>
   </head>
-  <body>
-    {% block body %} {% endblock %}
+  <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <img
+      src="../static/image/brand_logo.svg"
+      width="72"
+      height="72"
+      class="d-inline-block align-top"
+      alt=""
+      loading="lazy"
+    />
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Socket Chat</a>
+    {% if 'display_name' in session %}
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="nav-link" href="#">Sign out</a>
+      </li>
+    </ul>
+    {% endif %}
+  </nav>
+  <body class="text-center">
+    <div class="container">
+      {% block body %} {% endblock %}
+    </div>
   </body>
 </html>
