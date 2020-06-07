@@ -1,0 +1,10 @@
+{% extends 'layout.html' %} {% block body %}
+<h1>Wecome to Socket Chat</h1>
+
+{% if "display_name" in session %}
+<h2>You are logged in {{ session["display_name"].capitalize() }}</h2>
+{% endif %}
+
+<!-- <ul id="messages"></ul>
+<form action=""><input id="m" autocomplete="off" /><button>Send</button></form> -->
+{% endblock %}
