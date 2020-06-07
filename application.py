@@ -9,19 +9,37 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
+
+# Configure flask login
+# login = LoginManager(app)
+# login.init_app(app)
+
+
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.get(user_id)
+
+# @log.user_loader
+# def load_user(id):
+#     return User.query.get(int(id))
+
 # show the home page
-@app.route("/")
+@app.route("/", methods=['GET'])
 def index():
     return render_template("index.html")
 
 
-@app.route("/join", methods=["post", "get"])
+@app.route("/join", methods=["POST"])
 def join():
-    session['display_name'] = request.form['display_name']
-    print(session['display_name'])
-    return render_template('main.html')
     # save display name in session
+    session['display_name'] = request.form.get("display_name")
     # render a template showing list of chats and form to create new one
+    return redirect("/main")
+
+
+@app.route("/main", methods=["GET"])
+def main():
+    return render_template('main.html')
 
 # Receiving message
 @socketio.on('message')
