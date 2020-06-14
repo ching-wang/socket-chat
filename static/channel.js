@@ -1,15 +1,20 @@
-document.addEventListener("DOMContentLoaded", () => {
-  var channelName = document.getElementById("channel_name_header").dataset
-    .channelName;
+console.log("Starting");
 
-  console.log("connecting with socket.io");
-  var socket = io.connect(
-    location.protocol + "//" + document.domain + ":" + location.port
-  );
-  socket.on("connect", () => {
-    console.log("socket.io connected");
-    console.log("joining", channelName);
-    socket.emit("join_channel", channelName);
-    console.log("joined", channelName);
+function runChat() {
+  console.log("Connecting to socket");
+  const socket = io();
+  socket.on("connect", function () {
+    console.log("Socket connected");
   });
-});
+
+  const channelButtons = document.querySelectorAll(".channel-button");
+  channelButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const channelName = btn.dataset.channelName;
+      console.log("Joining channel", { channelName });
+      socket.emit("join_channel", { channelName });
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", runChat);

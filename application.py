@@ -1,4 +1,6 @@
 import os
+import logging
+import sys
 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
@@ -6,6 +8,8 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from markupsafe import escape
 
 app = Flask(__name__)
+handler = logging.StreamHandler(sys.stdout)
+app.logger.addHandler(handler)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
@@ -54,20 +58,11 @@ def logout():
     flash('You are successfully logged out. Please create a channel or join one to start t chart', 'success')
     return render_template("index.html")
 
-
-@app.route("/channel/<channel_name>", methods=["GET", "POST"])
-def channels(channel_name: str):
-    session['current_channel'] = channel_name
-
-    if request.method == "POST":
-        return redirect("index.html")
-    return render_template("channel.html", channel_name=channel_name, channels=channelLists)
-
 # Join in a channel
 @socketio.on("join_channel")
-def join_channel(channel_name):
-    join_room(channel_name)
-    emit("recent_messages", my_message_lists[channel_name])
+def join_channel(data):
+    logging.info("join_channel %s", data)
+    join_room(data["channelName"])
 
 # Create channel
 @socketio.on("create_channel")
