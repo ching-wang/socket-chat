@@ -77,20 +77,54 @@
         <ul class="nav flex-column">
           {% for name, c in channels.items() %}
           <li class="nav-item">
-            <a
-              class="nav-link active"
-              href="{{ url_for('channels', channel_name=name )}}"
+            <button
+              class="btn btn-link channel-button" data-channel-name="{{name}}"
             >
               <span data-feather="home"></span>
               {{ name }} <span class="sr-only">(current)</span>
-            </a>
+            </button>
           </li>
           {% endfor %}
         </ul>
       </div>
     </nav>
 
-    {% block chatting_room %} {% endblock %}
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
+      >
+        <h2 class="h2" data-channel-name="{{ channel_name }}" id="channel_name_header">{{ channel_name }}</h2>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group mr-2">
+            <button class="btn btn-sm btn-outline-secondary">Exit</button>
+          </div>
+        </div>
+      </div>
+    
+      <div>
+        <ul id="messages">
+          <li>What are you going to this weekend?</li>
+        </ul>
+      </div>
+      <form class="form" method="post" action="#">
+        <div id="input-area" class="input-group mb-3">
+          <input
+            type="text"
+            id="user_message"
+            class="form-control"
+            placeholder="Type here..."
+            aria-label="Type a message"
+            aria-describedby="basic-addon2"
+            autocomplete="off"
+          />
+          <div class="input-group-append">
+            <button id="send_message" class="btn btn-warning" type="submit">
+              SEND <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+      </form>
+    </main>
+    
   </div>
 </div>
 {% endblock %} {% endblock %}
