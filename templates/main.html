@@ -1,7 +1,7 @@
 {% extends 'layout.html' %} {% block title%}Dashboard{% endblock%} {% block body
 %} {% block contents %} {% if "display_name" in session %}
 
-<h2>You are logged in {{ session["display_name"] }}</h2>
+<h5>You are logged in as <strong>{{ session["display_name"] }}</strong></h5>
 {% endif %}
 <div class="container-fluid">
   <div class="row">
@@ -92,27 +92,20 @@
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-      <div
-        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
-      >
+      <div>
         <h2 class="h2" data-channel-name="{{ channel_name }}" id="channel_name_header">{{ channel_name }}</h2>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group mr-2">
-            <button class="btn btn-sm btn-outline-secondary">Exit</button>
-          </div>
-        </div>
       </div>
     
       <div>
-        <ul id="messages">
-          <li>What are you going to this weekend?</li>
+        <ul id="messages" class="list-unstyled">
+          <li>Start of chat...</li>
         </ul>
       </div>
-      <form class="form" method="post" action="#">
+      <form class="form" id="message-form">
         <div id="input-area" class="input-group mb-3">
           <input
             type="text"
-            id="user_message"
+            id="message-field"
             class="form-control"
             placeholder="Type here..."
             aria-label="Type a message"
