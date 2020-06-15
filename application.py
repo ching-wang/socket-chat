@@ -71,31 +71,24 @@ def on_join_channel(data):
     join_room(channel_name)
     emit("joined_channel", {"channelName": channel_name})
     emit(
-        "chat_msg",
+        "server_msg",
         {
             "msg": f"{session['display_name']} has joined the {channel_name} channel"
         },
         room=channel_name)
 
 
-# Create channel
-@socketio.on("create_channel")
-def create_channel(channel_name):
-
-    # Check if the channel name is exist
-    if channel_name in channelLists.items():
-        emit("error", f"{channel_name} has already been taken")
-
-    # add it to the channel lists
-    channelLists['key'] = channel_name
-    my_message_lists[channel_name] = []
-
-    join_room(channel_name)
-    current_channel = channel_name
-    data = {"channel_name": channel_name,
-            "messages": my_message_lists[channel]}
-    emit("join_channel", data)
-
+@socketio.on("send_chat_msg")
+def on_send_chat_msg(data):
+    logging.info("chat_msg %s", data)
+    if data["msg"] and data["channelName"]:
+        emit(
+            "chat_msg",
+            {
+                "msg": data["msg"],
+                "from": session["display_name"],
+            },
+            room=data["channelName"])
 
 # Receiving message
 @socketio.on('message')
