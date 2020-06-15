@@ -1,5 +1,7 @@
 console.log("Starting");
 
+const messageList = document.querySelector("#messages");
+
 function runChat() {
   console.log("Connecting to socket");
   const socket = io();
@@ -22,6 +24,9 @@ function runChat() {
 
   socket.on("chat_msg", (data) => {
     console.log("chat_msg", { data });
+    const msgLi = document.createElement("li");
+    msgLi.innerText = data.msg;
+    messageList.append(msgLi);
   });
 
   setUpChannelButtons(socket);
