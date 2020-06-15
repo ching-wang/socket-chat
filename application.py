@@ -58,11 +58,25 @@ def logout():
     flash('You are successfully logged out. Please create a channel or join one to start t chart', 'success')
     return render_template("index.html")
 
-# Join in a channel
+
+@socketio.on('connect')
+def test_connect():
+    emit('confirm_connected', {"Connected": True})
+
+
 @socketio.on("join_channel")
-def join_channel(data):
+def on_join_channel(data):
     logging.info("join_channel %s", data)
-    join_room(data["channelName"])
+    channel_name = data["channelName"]
+    join_room(channel_name)
+    emit("joined_channel", {"channelName": channel_name})
+    emit(
+        "chat_msg",
+        {
+            "msg": f"{session['display_name']} has joined the {channel_name} channel"
+        },
+        room=channel_name)
+
 
 # Create channel
 @socketio.on("create_channel")
