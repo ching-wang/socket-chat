@@ -38,12 +38,15 @@ function runChat() {
     if (!data.msg || !data.from) {
       return;
     }
+
     const msgLi = document.createElement("li");
+    const createTime = document.createElement("small");
+    createTime.innerText = ` ${data.created_at}  `;
     const from = document.createElement("strong");
     from.innerText = `${data.from}: `;
     const msg = document.createElement("span");
     msg.innerText = data.msg;
-    msgLi.append(from, msg);
+    msgLi.append(from, msg, createTime);
     messageList.append(msgLi);
     messageList.scrollTop = messageList.scrollHeight;
   });

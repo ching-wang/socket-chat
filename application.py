@@ -1,11 +1,12 @@
+from markupsafe import escape
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 import os
 import logging
 import sys
+import datetime
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
-from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
-from markupsafe import escape
 
 app = Flask(__name__)
 handler = logging.StreamHandler(sys.stdout)
@@ -87,6 +88,7 @@ def on_send_chat_msg(data):
             {
                 "msg": data["msg"],
                 "from": session["display_name"],
+                "created_at": datetime.datetime.now().replace(microsecond=0).isoformat()
             },
             room=data["channelName"])
 
