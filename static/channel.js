@@ -19,6 +19,7 @@ function runChat() {
   socket.on("joined_channel", (data) => {
     console.log("joined_channel", { data });
     localStorage.setItem("channelName", data.channelName);
+    // Make sure that the channel button exists? (it might already exist)
   });
 
   socket.on("message", (data) => {
@@ -65,6 +66,7 @@ function runChat() {
   });
 
   setUpChannelButtons(socket);
+  setUpCreateChannelForm(socket);
 }
 
 function setUpChannelButtons(socket) {
@@ -75,6 +77,19 @@ function setUpChannelButtons(socket) {
       console.log("Joining channel", { channelName });
       socket.emit("join_channel", { channelName });
     });
+  });
+}
+
+function setUpCreateChannelForm(socket) {
+  console.log("setUpCreateChannelForm");
+  const createChannelForm = document.querySelector("#channel_creation");
+  createChannelForm.addEventListener("submit", (event) => {
+    console.log("createChannelForm.submit", { event });
+    event.preventDefault();
+    const channelName = document.querySelector("#channel_name").value;
+    console.log({ channelName });
+    socket.emit("join_channel", { channelName });
+    $("#createChannelModal").modal("hide");
   });
 }
 

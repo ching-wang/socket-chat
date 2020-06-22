@@ -11,23 +11,23 @@
           type="button"
           class="btn btn-warning"
           data-toggle="modal"
-          data-target="#exampleModal"
+          data-target="#createChannelModal"
           data-whatever="@mdo"
         >
           + NEW CHANNEL
         </button>
         <div
           class="modal fade"
-          id="exampleModal"
+          id="createChannelModal"
           tabindex="-1"
           role="dialog"
-          aria-labelledby="exampleModalLabel"
+          aria-labelledby="createChannelModalLabel"
           aria-hidden="true"
         >
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
+                <h5 class="modal-title" id="createChannelModalLabel">
                   Create a channel
                 </h5>
                 <button
@@ -81,6 +81,7 @@
             <button
               class="btn btn-link channel-button"
               data-channel-name="{{name}}"
+              id="{{name}}"
             >
               <span data-feather="home"></span>
               {{ name }} <span class="sr-only">(current)</span>
