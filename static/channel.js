@@ -16,10 +16,16 @@ function runChat() {
     console.log("confirm_connected", { data });
   });
 
+  //join channel
   socket.on("joined_channel", (data) => {
     console.log("joined_channel", { data });
     localStorage.setItem("channelName", data.channelName);
     // Make sure that the channel button exists? (it might already exist)
+  });
+
+  //leave the channel
+  socket.on("leave", (data) => {
+    console.log("leave_channel", { data });
   });
 
   socket.on("message", (data) => {
@@ -39,7 +45,6 @@ function runChat() {
     if (!data.msg || !data.from) {
       return;
     }
-
     const msgLi = document.createElement("li");
     const createTime = document.createElement("small");
     createTime.innerText = ` ${data.created_at}  `;
@@ -50,6 +55,12 @@ function runChat() {
     msgLi.append(from, msg, createTime);
     messageList.append(msgLi);
     messageList.scrollTop = messageList.scrollHeight;
+  });
+
+  socket.on("left_channel", (data) => {
+    console.log("left_channel", { data });
+    localStorage.removeItem("channelName");
+    messageList.innerHTML = "";
   });
 
   messageForm.addEventListener("submit", (event) => {
@@ -67,9 +78,11 @@ function runChat() {
 
   setUpChannelButtons(socket);
   setUpCreateChannelForm(socket);
+  setUpExitChannel(socket);
 }
 
 function setUpChannelButtons(socket) {
+  console.log("setUpChannelButtons");
   const channelButtons = document.querySelectorAll(".channel-button");
   channelButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -78,6 +91,19 @@ function setUpChannelButtons(socket) {
       socket.emit("join_channel", { channelName });
     });
   });
+  console.log("setUpChannelButtons done");
+}
+
+function setUpExitChannel(socket) {
+  console.log("setUpExitChannel");
+  const exitBtn = document.querySelector("#exit-btn");
+  exitBtn.addEventListener("click", () => {
+    const channelName = localStorage.getItem("channelName");
+    console.log("exitChannel", { channelName });
+    localStorage.removeItem("channelName");
+    socket.emit("leave", { channelName });
+  });
+  console.log("setUpExitChannel done");
 }
 
 function setUpCreateChannelForm(socket) {
@@ -91,6 +117,7 @@ function setUpCreateChannelForm(socket) {
     socket.emit("join_channel", { channelName });
     $("#createChannelModal").modal("hide");
   });
+  console.log("setUpCreateChannelForm done");
 }
 
 document.addEventListener("DOMContentLoaded", runChat);
