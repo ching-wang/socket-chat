@@ -19,8 +19,10 @@ function runChat() {
   //join channel
   socket.on("joined_channel", (data) => {
     console.log("joined_channel", { data });
-    localStorage.setItem("channelName", data.channelName);
-    // Make sure that the channel button exists? (it might already exist)
+    if (!localStorage.getItem("channelName"))
+      localStorage.setItem("channelName", data.channelName);
+    const channelName = localStorage.getItem("channelName");
+    console.log(`You have already joined the channel ${channelName}`);
   });
 
   //leave the channel
@@ -76,9 +78,18 @@ function runChat() {
     console.log("Sent chat message", { sendMessage });
   });
 
+  rejoinPreviousChannel(socket);
   setUpChannelButtons(socket);
   setUpCreateChannelForm(socket);
   setUpExitChannel(socket);
+}
+
+function rejoinPreviousChannel(socket) {
+  const channelName = localStorage.getItem("channelName");
+  if (channelName) {
+    console.log("Re-joining previous channel", { channelName });
+    socket.emit("join_channel", { channelName });
+  }
 }
 
 function setUpChannelButtons(socket) {
