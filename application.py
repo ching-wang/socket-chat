@@ -18,25 +18,13 @@ socketio = SocketIO(app)
 channelLists = {"CHANNEL_1": None}
 my_message_lists = {}
 
-# Configure flask login
-# login = LoginManager(app)
-# login.init_app(app)
-
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.get(user_id)
-
-# @log.user_loader
-# def load_user(id):
-#     return User.query.get(int(id))
 
 # show the home page
 @app.route("/", methods=['GET'])
 def index():
     return render_template("index.html")
 
-
+# Display name Login
 @app.route("/login", methods=["POST"])
 def login():
     # save display name in session
@@ -77,6 +65,22 @@ def on_join_channel(data):
             "msg": f"{session['display_name']} has joined the {channel_name} channel"
         },
         room=channel_name)
+
+
+@socketio.on("leave")
+def on_leave(data):
+    logging.info("leave %s", data)
+    username = session['display_name']
+    channel_name = data["channelName"]
+    leave_room(channel_name)
+    emit("left_channel", {"channel": channel_name})
+    emit(
+        "server_msg",
+        {
+            "msg": f"{username} has left the {channel_name} channel."
+        },
+        room=channel_name
+    )
 
 
 @socketio.on("send_chat_msg")
