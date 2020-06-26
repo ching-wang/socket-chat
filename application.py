@@ -59,12 +59,16 @@ def on_join_channel(data):
     channel_name = data["channelName"]
     join_room(channel_name)
     emit("joined_channel", {"channelName": channel_name})
-    emit(
-        "server_msg",
-        {
-            "msg": f"{session['display_name']} has joined the {channel_name} channel"
-        },
-        room=channel_name)
+    if 'channel_name' in session and session['channel_name'] == channel_name:
+        pass
+    else:
+        emit(
+            "server_msg",
+            {
+                "msg": f"{session['display_name']} has joined the {channel_name} channel"
+            },
+            room=channel_name)
+    session['channel_name'] = data["channelName"]
 
 
 @socketio.on("leave")
