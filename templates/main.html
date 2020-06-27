@@ -1,7 +1,7 @@
 {% extends 'layout.html' %} {% block title%}Dashboard{% endblock%} {% block body
 %} {% block contents %} {% if "display_name" in session %}
 
-<h5>You are logged in as <strong>{{ session["display_name"] }}</strong></h5>
+<h5>You are logged in as <strong id="displayName">{{ session["display_name"] }}</strong></h5>
 {% endif %}
 <div class="container-fluid">
   <div class="row">
