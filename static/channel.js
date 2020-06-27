@@ -137,6 +137,8 @@ function setUpChannelButtons(socket) {
   channelButtons.forEach((btn) => {
     btnClone = btn.cloneNode(true);
     btnClone.addEventListener("click", () => {
+      console.log("Clearing existing messages");
+      document.getElementById("messages").innerHTML = "";
       const channelName = btn.dataset.channelName;
       console.log("Joining channel", { channelName });
       socket.emit("join_channel", { channelName });
@@ -164,6 +166,8 @@ function setUpCreateChannelForm(socket) {
   createChannelForm.addEventListener("submit", (event) => {
     console.log("createChannelForm.submit", { event });
     event.preventDefault();
+    console.log("Clearing existing messages");
+    document.getElementById("messages").innerHTML = "";
     const channelName = document.querySelector("#channel_name").value;
     console.log({ channelName });
     socket.emit("join_channel", { channelName });
