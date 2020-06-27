@@ -98,17 +98,11 @@ function runChat() {
     messageList.innerHTML = "";
   });
 
-  socket.on("remove_message", (data) => {
-    console.log("remove_message", { data });
-    const messageToBeDelete = getElementById(`${data.msg_id}`);
-    messageToBeDelete.remove();
+  socket.on("message_deleted", (data) => {
+    console.log("message_deleted", { data });
+    const message = document.getElementById(`${data.msg_id}`);
+    message.remove();
   });
-
-  // function removeMessage(socket) {
-  //   console.log("remove message");
-  //   const messageToBeDelete = getElementById('')
-  //   socket.emit("delete_message", { message });
-  // }
 
   messageForm.addEventListener("submit", (event) => {
     event.preventDefault();
