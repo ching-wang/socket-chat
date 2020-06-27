@@ -59,13 +59,14 @@ function runChat() {
       const deleteBtn = document.createElement("button");
       deleteBtn.className = "btn btn-sm btn-link text-danger";
       deleteBtn.innerText = "❌";
-      deleteBtn.addEventListener("click", () => {
+      deleteBtn.dataset.msgId = data.msg_id;
+      deleteBtn.addEventListener("click", (event) => {
         console.log("Message delete button clicked", {
-          msg_id: data.msg_id,
+          msg_id: event.target.dataset.msgId,
           channelName: localStorage.getItem("channelName"),
         });
         socket.emit("delete_message", {
-          msg_id: data.msg_id,
+          msg_id: event.target.dataset.msgId,
           channelName: localStorage.getItem("channelName"),
         });
       });

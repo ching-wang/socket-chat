@@ -151,7 +151,7 @@ def on_delete_msg(data):
     emit(
         "message_deleted",
         {
-            "msg_id": chat_message.msg_id
+            "msg_id": data["msg_id"]
         },
         room=data["channelName"])
 
