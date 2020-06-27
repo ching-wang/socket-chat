@@ -137,9 +137,12 @@ function setUpChannelButtons(socket) {
   channelButtons.forEach((btn) => {
     btnClone = btn.cloneNode(true);
     btnClone.addEventListener("click", () => {
+      const channelName = btn.dataset.channelName;
+      if (localStorage.getItem("channelName") == channelName) {
+        return;
+      }
       console.log("Clearing existing messages");
       document.getElementById("messages").innerHTML = "";
-      const channelName = btn.dataset.channelName;
       console.log("Joining channel", { channelName });
       socket.emit("join_channel", { channelName });
     });
