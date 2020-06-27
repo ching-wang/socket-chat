@@ -4,19 +4,22 @@ from flask_login import LoginManager, login_user, current_user, login_required, 
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 import os
 import logging
+import coloredlogs
 import sys
 import datetime
+from collections import deque, namedtuple
 
 
 app = Flask(__name__)
-handler = logging.StreamHandler(sys.stdout)
-app.logger.addHandler(handler)
+coloredlogs.install()
+# handler = logging.StreamHandler(sys.stdout)
+# app.logger.addHandler(handler)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-socketio = SocketIO(app)
+socketio = SocketIO(app, logger=False)
 
+ChatMessage = namedtuple("ChatMessage", ["message", "sender", "time"])
 
-channelLists = {"CHANNEL_1": None}
-my_message_lists = {}
+channelLists = {'First Channel': deque([], 100)}
 
 
 # show the home page
@@ -27,6 +30,7 @@ def index():
 # Display name Login
 @app.route("/login", methods=["POST"])
 def login():
+    session.clear()
     # save display name in session
     session['display_name'] = request.form.get("display_name")
     # render a template showing list of chats and form to create new one
@@ -40,12 +44,13 @@ def login():
 def main():
     return render_template('main.html', channels=channelLists)
 
+    # logout
 
-@app.route("/logout", methods=["GET"])
-def logout():
-    session.clear()
-    flash('You are successfully logged out. Please create a channel or join one to start t chart', 'success')
-    return render_template("index.html")
+    # @app.route("/logout", methods=["GET"])
+    # def logout():
+    #     session.clear()
+    #     flash('You are successfully logged out. Please create a channel or join one to start t chart', 'success')
+    #     return render_template("index.html")
 
 
 @socketio.on('connect')
@@ -55,13 +60,33 @@ def test_connect():
 
 @socketio.on("join_channel")
 def on_join_channel(data):
-    logging.info("join_channel %s", data)
+    logging.warn("join_channel %s", data)
     channel_name = data["channelName"]
+
+    if channel_name not in channelLists:
+        channelLists[channel_name] = deque([], 100)
+        # TODO later: emit to all users that a new channel has been created
+
     join_room(channel_name)
     emit("joined_channel", {"channelName": channel_name})
+
     if 'channel_name' in session and session['channel_name'] == channel_name:
         pass
     else:
+        logging.warn("User joining channel %s %s",
+                     session['display_name'], channel_name)
+        for chat_message in channelLists[channel_name]:
+            logging.warn(
+                "Re-sending old chat message to new channel joiner: %s", chat_message)
+            emit(
+                "chat_msg",
+                {
+                    "msg": chat_message.message,
+                    "from": chat_message.sender,
+                    "created_at": chat_message.time
+                })
+        logging.warn("Announcing joining user in channel %s %s",
+                     session['display_name'], channel_name)
         emit(
             "server_msg",
             {
@@ -90,15 +115,28 @@ def on_leave(data):
 @socketio.on("send_chat_msg")
 def on_send_chat_msg(data):
     logging.info("chat_msg %s", data)
-    if data["msg"] and data["channelName"]:
+    channel_name = data["channelName"]
+    if data["msg"] and channel_name:
+        chat_message = ChatMessage(
+            message=data["msg"],
+            sender=session["display_name"],
+            time=datetime.datetime.now().replace(microsecond=0).isoformat())
+        channelLists[channel_name].append(chat_message)
         emit(
             "chat_msg",
             {
-                "msg": data["msg"],
-                "from": session["display_name"],
-                "created_at": datetime.datetime.now().replace(microsecond=0).isoformat()
+                "msg": chat_message.message,
+                "from": chat_message.sender,
+                "created_at": chat_message.time
             },
             room=data["channelName"])
+# private message
+# @socketio.on('private_message')
+# def private_message(private_message):
+
+#     print(private_message)
+# delete ones message
+
 
 # Receiving message
 @socketio.on('message')

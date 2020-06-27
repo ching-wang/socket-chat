@@ -1,3 +1,7 @@
 Flask
 Flask-SocketIO
 Flask-Login
+
+markupsafe
+coloredlogs
+
