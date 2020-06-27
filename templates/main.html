@@ -93,10 +93,10 @@
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-      <div>
-        <h2 class="h2" data-channel-name="{{ channel_name }}" id="channel_name_header">{{ channel_name }}</h2>
+      <div class="channel-header">
+        <p data-channel-name="{{ channel_name }}" id="channel_name_header"> Current Channel: {{ channel_name }}</p>
+        <button class="btn btn-danger nav-item float-right" id="exit-btn">Leave </button>
       </div>
-    
       <div>
         <ul id="messages" class="list-unstyled">
           <li>Start of chat...</li>  
@@ -119,13 +119,6 @@
             </button>
           </div>
       </form>
-      <div class="form-group input-group-append">
-        <label for="FormControlFile"></label>
-        <input type="file" class="form-control-file" id="form-file">
-      </div>
-      <div class="form-group input-group-append">
-        <button class="btn btn-danger" id="exit-btn">Leave </button>
-      </div>
     </main>
   </div>
 </div>
