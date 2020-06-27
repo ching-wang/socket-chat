@@ -21,7 +21,7 @@ socketio = SocketIO(app, logger=False)
 ChatMessage = namedtuple(
     "ChatMessage", ["message", "sender", "time", "msg_id"])
 
-channelLists = {'First Channel': deque([], 10)}
+channelLists = {'First Channel': deque([], 100)}
 
 
 # show the home page
@@ -64,9 +64,8 @@ def test_connect():
 def on_join_channel(data):
     logging.warn("join_channel %s", data)
     channel_name = data["channelName"]
-
     if channel_name not in channelLists:
-        channelLists[channel_name] = deque([], 10)
+        channelLists[channel_name] = deque([], 100)
         emit("new_channel_created", {
              "channel": channel_name}, broadcast=True)
         emit(
@@ -141,13 +140,28 @@ def on_send_chat_msg(data):
                 "msg_id": chat_message.msg_id
             },
             room=data["channelName"])
-# private message
-# @socketio.on('private_message')
-# def private_message(private_message):
 
-#     print(private_message)
-# delete ones message
 
+@socketio.on("delete_message")
+def on_delete_msg(data):
+    logging.warn("on_delete_msg %s", data)
+
+    # Make a new deque without that message in it.
+    filtered_deque = deque([], 100)
+    for chat_message in channelLists[data["channelName"]]:
+        if chat_message.msg_id != data["msg_id"]:
+            filtered_deque.append(chat_message)
+
+    # Replace the existing deque with the filtered one.
+    channelLists[data["channelName"]] = filtered_deque
+
+    # Tell all users that we deleted the message.
+    emit(
+        "message_deleted",
+        {
+            "msg_id": chat_message.msg_id
+        },
+        room=data["channelName"])
 
 # Receiving message
 @socketio.on('message')
