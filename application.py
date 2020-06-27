@@ -19,7 +19,7 @@ socketio = SocketIO(app, logger=False)
 ChatMessage = namedtuple(
     "ChatMessage", ["message", "sender", "time", "msg_id"])
 
-channelLists = {'First Channel': deque([], 100)}
+channelLists = {'Initial Channel': deque([], 100)}
 
 
 # show the home page
