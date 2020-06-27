@@ -138,6 +138,11 @@ function setUpChannelButtons(socket) {
     btnClone = btn.cloneNode(true);
     btnClone.addEventListener("click", () => {
       const channelName = btn.dataset.channelName;
+      if (localStorage.getItem("channelName") == channelName) {
+        return;
+      }
+      console.log("Clearing existing messages");
+      document.getElementById("messages").innerHTML = "";
       console.log("Joining channel", { channelName });
       socket.emit("join_channel", { channelName });
     });
@@ -164,6 +169,8 @@ function setUpCreateChannelForm(socket) {
   createChannelForm.addEventListener("submit", (event) => {
     console.log("createChannelForm.submit", { event });
     event.preventDefault();
+    console.log("Clearing existing messages");
+    document.getElementById("messages").innerHTML = "";
     const channelName = document.querySelector("#channel_name").value;
     console.log({ channelName });
     socket.emit("join_channel", { channelName });

@@ -13,8 +13,6 @@ import uuid
 
 app = Flask(__name__)
 coloredlogs.install()
-# handler = logging.StreamHandler(sys.stdout)
-# app.logger.addHandler(handler)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app, logger=False)
 
@@ -27,6 +25,8 @@ channelLists = {'First Channel': deque([], 100)}
 # show the home page
 @app.route("/", methods=['GET'])
 def index():
+    if "display_name" in session and session["display_name"]:
+        return redirect("/main")
     return render_template("index.html")
 
 # Display name Login
@@ -45,14 +45,6 @@ def login():
 @app.route("/main", methods=["GET"])
 def main():
     return render_template('main.html', channels=channelLists)
-
-    # logout
-
-    # @app.route("/logout", methods=["GET"])
-    # def logout():
-    #     session.clear()
-    #     flash('You are successfully logged out. Please create a channel or join one to start t chart', 'success')
-    #     return render_template("index.html")
 
 
 @socketio.on('connect')

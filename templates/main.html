@@ -1,7 +1,7 @@
 {% extends 'layout.html' %} {% block title%}Dashboard{% endblock%} {% block body
 %} {% block contents %} {% if "display_name" in session %}
 
-<h5>You are logged in as <strong id="displayName">{{ session["display_name"] }}</strong></h5>
+<h6>You are logged in as <strong id="displayName">{{ session["display_name"] }}</strong></h6>
 {% endif %}
 <div class="container-fluid">
   <div class="row">
@@ -93,9 +93,9 @@
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
-      <div class="channel-header">
-        <p data-channel-name="{{ channel_name }}" id="channel_name_header"> Current Channel: {{ channel_name }}</p>
-        <button class="btn btn-danger nav-item float-right" id="exit-btn">Leave </button>
+      <div class="p-3 mb-2 bg-secondary text-white">
+        <p data-channel-name="{{ channel_name }}" id="channel_name_header"> Current Channel: <strong>{{ channel_name }}</strong></strong></p>
+        <button class="btn btn-danger nav-item float-right btn-sm" id="exit-btn">Leave </button>
       </div>
       <div>
         <ul id="messages" class="list-unstyled">
