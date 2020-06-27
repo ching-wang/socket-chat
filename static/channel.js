@@ -59,6 +59,23 @@ function runChat() {
     messageList.scrollTop = messageList.scrollHeight;
   });
 
+  socket.on("new_channel_created", (data) => {
+    console.log("new_channel_create", { data });
+    const channelName = `${data.channel}`;
+    channelLi = document.createElement("li");
+    channelLi.innerHTML = `<button
+      class="btn btn-link channel-button"
+      data-channel-name="${channelName}"
+      id="${channelName}">
+        <span data-feather="home"></span>
+        ${channelName}
+      </button>`;
+    const channelLists = document.getElementById("channel-lists");
+    channelLists.append(channelLi);
+    setUpChannelButtons(socket);
+    console.log(channelLists);
+  });
+
   socket.on("left_channel", (data) => {
     console.log("left_channel", { data });
     localStorage.removeItem("channelName");
@@ -96,11 +113,13 @@ function setUpChannelButtons(socket) {
   console.log("setUpChannelButtons");
   const channelButtons = document.querySelectorAll(".channel-button");
   channelButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btnClone = btn.cloneNode(true);
+    btnClone.addEventListener("click", () => {
       const channelName = btn.dataset.channelName;
       console.log("Joining channel", { channelName });
       socket.emit("join_channel", { channelName });
     });
+    btn.parentNode.replaceChild(btnClone, btn);
   });
   console.log("setUpChannelButtons done");
 }

@@ -14,4 +14,8 @@
 #messages li:nth-child(odd) {
   background: #eee; }
 
+.channel-header {
+  background: darkcyan;
+  margin: 1em; }
+
 /*# sourceMappingURL=main.css.map */
