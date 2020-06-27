@@ -27,6 +27,8 @@ channelLists = {'First Channel': deque([], 100)}
 # show the home page
 @app.route("/", methods=['GET'])
 def index():
+    if session['display_name']:
+        return redirect('/main')
     return render_template("index.html")
 
 # Display name Login
