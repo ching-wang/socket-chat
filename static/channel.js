@@ -3,6 +3,7 @@ console.log("Starting");
 const messageList = document.querySelector("#messages");
 const messageForm = document.querySelector("#message-form");
 const messageField = document.querySelector("#message-field");
+const displayName = document.getElementById("displayName").innerText.trim();
 
 function runChat() {
   console.log("Connecting to socket");
@@ -19,10 +20,10 @@ function runChat() {
   //join channel
   socket.on("joined_channel", (data) => {
     console.log("joined_channel", { data });
-    if (!localStorage.getItem("channelName"))
-      localStorage.setItem("channelName", data.channelName);
-    const channelName = localStorage.getItem("channelName");
-    console.log(`You have already joined the channel ${channelName}`);
+    localStorage.setItem("channelName", data.channelName);
+    document.getElementById(
+      "channel_name_header"
+    ).innerText = `Current Channel - ${data.channelName}`;
   });
 
   //leave the channel
@@ -48,13 +49,18 @@ function runChat() {
       return;
     }
     const msgLi = document.createElement("li");
-    const createTime = document.createElement("small");
-    createTime.innerText = ` ${data.created_at}  `;
-    const from = document.createElement("strong");
-    from.innerText = `${data.from}: `;
-    const msg = document.createElement("span");
-    msg.innerText = data.msg;
-    msgLi.append(from, msg, createTime);
+    msgLi.id = data.msg_id;
+    msgLi.innerHTML = `
+    <strong>${data.from}: </strong>
+    <span>${data.msg}</span>
+    <small>${data.created_at}</small>
+    `;
+    if (data.from === displayName) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "btn btn-sm btn-link text-danger";
+      deleteBtn.innerText = "❌";
+      msgLi.append(deleteBtn);
+    }
     messageList.append(msgLi);
     messageList.scrollTop = messageList.scrollHeight;
   });
