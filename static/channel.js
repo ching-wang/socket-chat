@@ -59,6 +59,16 @@ function runChat() {
       const deleteBtn = document.createElement("button");
       deleteBtn.className = "btn btn-sm btn-link text-danger";
       deleteBtn.innerText = "❌";
+      deleteBtn.addEventListener("click", () => {
+        console.log("Message delete button clicked", {
+          msg_id: data.msg_id,
+          channelName: localStorage.getItem("channelName"),
+        });
+        socket.emit("delete_message", {
+          msg_id: data.msg_id,
+          channelName: localStorage.getItem("channelName"),
+        });
+      });
       msgLi.append(deleteBtn);
     }
     messageList.append(msgLi);
@@ -87,6 +97,18 @@ function runChat() {
     localStorage.removeItem("channelName");
     messageList.innerHTML = "";
   });
+
+  socket.on("remove_message", (data) => {
+    console.log("remove_message", { data });
+    const messageToBeDelete = getElementById(`${data.msg_id}`);
+    messageToBeDelete.remove();
+  });
+
+  // function removeMessage(socket) {
+  //   console.log("remove message");
+  //   const messageToBeDelete = getElementById('')
+  //   socket.emit("delete_message", { message });
+  // }
 
   messageForm.addEventListener("submit", (event) => {
     event.preventDefault();

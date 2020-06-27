@@ -149,6 +149,18 @@ def on_send_chat_msg(data):
 # delete ones message
 
 
+@socketio.on("delete_message")
+def on_delete_msg(data):
+    logging.info("on_delete_msg %s", data)
+    # Find and delete this message in the deque.
+
+    emit(
+        "message_deleted",
+        {
+            "msg_id": data.msg_id
+        },
+        broadcast=True)
+
 # Receiving message
 @socketio.on('message')
 def handle_message(message):
