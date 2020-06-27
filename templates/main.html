@@ -75,17 +75,16 @@
             </div>
           </div>
         </div>
-        <ul class="nav flex-column">
+        <ul class="nav flex-column" id="channel-lists">
           {% for name, c in channels.items() %}
-          
-          <li class="nav-item">
+          <li class="nav-item channel_name_li" >
             <button
               class="btn btn-link channel-button"
               data-channel-name="{{name}}"
               id="{{name}}"
             >
               <span data-feather="home"></span>
-              {{ name }} <span class="sr-only">(current)</span>
+              {{ name }}
           </button>
           </li>
           {% endfor %}

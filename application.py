@@ -65,7 +65,14 @@ def on_join_channel(data):
 
     if channel_name not in channelLists:
         channelLists[channel_name] = deque([], 100)
-        # TODO later: emit to all users that a new channel has been created
+        emit("new_channel_created", {
+             "channel": channel_name}, broadcast=True)
+        emit(
+            'server_msg',
+            {
+                'msg': f"New channel {channel_name} has been created by {session['display_name']}",
+            },
+            broadcast=True)
 
     join_room(channel_name)
     emit("joined_channel", {"channelName": channel_name})
