@@ -8,6 +8,7 @@ import coloredlogs
 import sys
 import datetime
 from collections import deque, namedtuple
+import uuid
 
 
 app = Flask(__name__)
@@ -17,9 +18,10 @@ coloredlogs.install()
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app, logger=False)
 
-ChatMessage = namedtuple("ChatMessage", ["message", "sender", "time"])
+ChatMessage = namedtuple(
+    "ChatMessage", ["message", "sender", "time", "msg_id"])
 
-channelLists = {'First Channel': deque([], 100)}
+channelLists = {'First Channel': deque([], 10)}
 
 
 # show the home page
@@ -64,7 +66,7 @@ def on_join_channel(data):
     channel_name = data["channelName"]
 
     if channel_name not in channelLists:
-        channelLists[channel_name] = deque([], 100)
+        channelLists[channel_name] = deque([], 10)
         emit("new_channel_created", {
              "channel": channel_name}, broadcast=True)
         emit(
@@ -90,8 +92,8 @@ def on_join_channel(data):
                 {
                     "msg": chat_message.message,
                     "from": chat_message.sender,
-                    "created_at": chat_message.time
-                })
+                    "created_at": chat_message.time,
+                    "msg_id": chat_message.msg_id})
         logging.warn("Announcing joining user in channel %s %s",
                      session['display_name'], channel_name)
         emit(
@@ -127,14 +129,16 @@ def on_send_chat_msg(data):
         chat_message = ChatMessage(
             message=data["msg"],
             sender=session["display_name"],
-            time=datetime.datetime.now().replace(microsecond=0).isoformat())
+            time=datetime.datetime.now().replace(microsecond=0).isoformat(),
+            msg_id=uuid.uuid4().hex)
         channelLists[channel_name].append(chat_message)
         emit(
             "chat_msg",
             {
                 "msg": chat_message.message,
                 "from": chat_message.sender,
-                "created_at": chat_message.time
+                "created_at": chat_message.time,
+                "msg_id": chat_message.msg_id
             },
             room=data["channelName"])
 # private message
